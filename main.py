@@ -42,7 +42,7 @@ class Deck:
         single_card = self.deck.pop()
         return single_card
 
-
+#What are we holding
 class Hand:
     def __init__(self):
         self.cards = []
@@ -70,12 +70,12 @@ class Chips:
         self.bet = 0
         while True:
             try:
+                ######### FIRST TIME PLAYING #########
                 if replay_count == 0:
                     total = int(input("Please enter the total value of chips available for playing "))
                 else:
-                    #add_chips = ""
+                    ######### REPLAY #########
                     extra_chips = 0
-                    #while add_chips != True or add_chips != False:
                     add_chips = input('Do you want to add chips? Enter Yes or No: ').lower()
                     while True:
                         if add_chips == 'yes':
@@ -83,7 +83,7 @@ class Chips:
                             try:
                                 extra_chips = int(input("Add the amount of chips you want to include in your total amount "))
                                 if extra_chips <= 0:
-                                    raise ValueError("we want an integer 1") #We want an integer that is positive as value of chips
+                                    raise ValueError("We want an positive integer for the extra chips we want to add") 
                                 else:
                                     total = extra_chips + total
                                     break
@@ -94,16 +94,15 @@ class Chips:
                             break
                         else:
                             print('Please provide a valid answer')
+                ######### BOTH FOR PLAYING 1ST TIME AND REPLAY #########
                 if total <= 0:
-                    raise ValueError("we want a n integer2") #We want an integer that is positive as value of chips
+                    raise ValueError("We want a positive integer for the total amount of chips") 
                 replay_count += 1
             except ValueError:
                 print('Sorry, the total amount of chips must be a positive integer!')
             else:
                 break
     
-        
-
     def win_bet(self):
         global total
         total += self.bet
@@ -119,7 +118,7 @@ def take_bet(chips):
     while True:
         try:
             chips.bet = int(input('How many chips would you like to bet? '))
-            if chips.bet < 1:
+            if chips.bet <= 0:
                 raise ValueError #We want an integer that is positive as bet
         except ValueError:
             print('Sorry, a bet must be a positive integer!')
@@ -131,14 +130,12 @@ def take_bet(chips):
             
 
 def hit(deck,hand):
-    
     hand.add_card(deck.deal())
     hand.adjust_for_ace()
 
 
 def hit_or_stand(deck,hand):
     global playing 
-
     while True:
         x = input('Would you Hit or Stand? Type your decision: ')
         if x.capitalize() == "Hit":
@@ -220,7 +217,7 @@ while True:
     dealer_hand.add_card(deck.deal())
             
     # Set up the Player's chips
-    player_chips = Chips()  # remember the default value is 100    
+    player_chips = Chips()    
     
     # Prompt the Player for their bet
     take_bet(player_chips)
@@ -267,17 +264,3 @@ while True:
 
     if not replay():
        break
-    
-    '''
-    # Ask to play again
-    new_game = input("Would you like to play another hand? Enter 'y' or 'n' ")
-    
-    if new_game.lower()=='y':
-        playing=True
-        continue
-    else:
-        print("Thanks for playing!")
-        break
-
-        '''
-
