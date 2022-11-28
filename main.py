@@ -68,16 +68,40 @@ class Chips:
         global total
         global replay_count
         self.bet = 0
-        while replay_count == 0:
+        while True:
             try:
-                total = int(input("Please enter the total value of chips available for playing "))
-                if total < 0:
-                    raise ValueError #We want an integer that is positive as value of chips
+                if replay_count == 0:
+                    total = int(input("Please enter the total value of chips available for playing "))
+                else:
+                    #add_chips = ""
+                    extra_chips = 0
+                    #while add_chips != True or add_chips != False:
+                    add_chips = input('Do you want to add chips? Enter Yes or No: ').lower()
+                    while True:
+                        if add_chips == 'yes':
+                            print(f"You are currently holding {total} chips")
+                            try:
+                                extra_chips = int(input("Add the amount of chips you want to include in your total amount "))
+                                if extra_chips <= 0:
+                                    raise ValueError("we want an integer 1") #We want an integer that is positive as value of chips
+                                else:
+                                    total = extra_chips + total
+                                    break
+                            except ValueError:
+                                print('Sorry, the total amount of chips must be a positive integer!2')
+  
+                        elif add_chips == 'no':
+                            break
+                        else:
+                            print('Please provide a valid answer')
+                if total <= 0:
+                    raise ValueError("we want a n integer2") #We want an integer that is positive as value of chips
                 replay_count += 1
             except ValueError:
                 print('Sorry, the total amount of chips must be a positive integer!')
             else:
                 break
+    
         
 
     def win_bet(self):
@@ -101,7 +125,7 @@ def take_bet(chips):
             print('Sorry, a bet must be a positive integer!')
         else:
             if chips.bet > total:
-                print("Sorry, your bet can't exceed",chips.total)
+                print("Sorry, your bet can't exceed",total)
             else:
                 break
             
@@ -176,15 +200,6 @@ def replay():
         else:
             print('Please provide a valid answer')
 
-'''
- new_game = input("Would you like to play another hand? Enter 'y' or 'n' ")
-    
-    if new_game.lower()=='y':
-        playing=True
-        continue
-    else:
-        print("Thanks for playing!")
-        break'''
 
 
 while True:
