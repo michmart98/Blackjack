@@ -1,3 +1,5 @@
+#from functions import playing, Card, Deck, Hand, Chips, take_bet, hit, hit_or_stand, show_some, show_all, player_busts, player_wins, dealer_busts ,dealer_wins, push, replay 
+
 import random
 
 #Declare variables to store suits, ranks and values
@@ -7,6 +9,8 @@ values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,
          'Queen':10, 'King':10, 'Ace':11}
 
 playing = True
+replay_count = 0
+total = 0
 
 #Hold the Deck-Cards, shuffle it and deal out
 class Card:
@@ -19,13 +23,13 @@ class Card:
 
 # In this class we will store our 52 cards
 class Deck:
-    def __init__(self) -> None:
+    def __init__(self):
         self.deck = []  # start with an empty list
         for suit in suits:
             for rank in ranks:
                 self.deck.append(Card(suit,rank)) # build Card objects and add them to the list
 
-    def __str__(self) -> str:
+    def __str__(self):
         deck_comp = ''  # start with an empty string
         for card in self.deck:
             deck_comp += '\n '+card.__str__() # add each Card object's print string
@@ -38,8 +42,6 @@ class Deck:
         single_card = self.deck.pop()
         return single_card
 
-test_deck = Deck()
-print(test_deck)
 
 class Hand:
     def __init__(self):
@@ -63,12 +65,15 @@ class Hand:
 class Chips:
 
     def __init__(self):
+        global total
+        global replay_count
         self.bet = 0
-        while True:
+        while replay_count == 0:
             try:
-                self.total = int(input("Please enter the total value of chips available for playing "))
-                if self.total < 0:
+                total = int(input("Please enter the total value of chips available for playing "))
+                if total < 0:
                     raise ValueError #We want an integer that is positive as value of chips
+                replay_count += 1
             except ValueError:
                 print('Sorry, the total amount of chips must be a positive integer!')
             else:
@@ -76,15 +81,17 @@ class Chips:
         
 
     def win_bet(self):
-        self.total += self.bet
+        global total
+        total += self.bet
 
     def lose_bet(self):
-        self.total -= self.bet
+        global total
+        total -= self.bet
 
 
 
 def take_bet(chips):
-    
+    global total
     while True:
         try:
             chips.bet = int(input('How many chips would you like to bet? '))
@@ -93,7 +100,7 @@ def take_bet(chips):
         except ValueError:
             print('Sorry, a bet must be a positive integer!')
         else:
-            if chips.bet > chips.total:
+            if chips.bet > total:
                 print("Sorry, your bet can't exceed",chips.total)
             else:
                 break
@@ -156,21 +163,34 @@ def push(player,dealer):
 
 ### Replay function
 def replay():
+    global playing 
     answer = ""
     while answer != True or answer != False:
         answer = input('Do you want to play again? Enter Yes or No: ').lower()
         if answer == 'yes':
+            playing = True
+            answer = True
             return True
         elif answer == 'no':
-            return False
+            break
         else:
             print('Please provide a valid answer')
+
+'''
+ new_game = input("Would you like to play another hand? Enter 'y' or 'n' ")
+    
+    if new_game.lower()=='y':
+        playing=True
+        continue
+    else:
+        print("Thanks for playing!")
+        break'''
 
 
 while True:
     # Print an opening statement
     print('Welcome to BlackJack! Get as close to 21 as you can without going over!\n\
-    Dealer hits until she reaches 17. Aces count as 1 or 11.')
+    Aces count as 1 or 11.')
     
     # Create & shuffle the deck, deal two cards to each player
     deck = Deck()
@@ -208,10 +228,7 @@ while True:
 
 
     # If Player hasn't busted, play Dealer's hand until Dealer reaches 17 
-    if player_hand.value <= 21:
-        
-        #while dealer_hand.value < 17:
-        #    hit(deck,dealer_hand)    
+    if player_hand.value <= 21:  
     
         # Show all cards
         show_all(player_hand,dealer_hand)
@@ -228,12 +245,13 @@ while True:
 
         else:
             push(player_hand,dealer_hand)        
+
     
     # Inform Player of their chips total 
-    print("\nPlayer's winnings stand at",player_chips.total)
+    print("\nPlayer's winnings stand at",total)
 
     if not replay():
-        break
+       break
     
     '''
     # Ask to play again
